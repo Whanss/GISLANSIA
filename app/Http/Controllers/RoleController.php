@@ -2,10 +2,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class RoleController extends Controller
 {
     public function __construct()
     {
@@ -14,7 +14,7 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::with("roles")->paginate(10);
-        return view("admin.users.index", compact("users"));
+        $roles = Role::with("permissions")->get();
+        return view("admin.roles.index", compact("roles"));
     }
 }
