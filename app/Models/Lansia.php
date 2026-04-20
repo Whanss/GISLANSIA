@@ -8,7 +8,8 @@ class Lansia extends Model
 {
     use HasUuids;
 
-    protected $primaryKey = "uuid";
+    protected $keyType = "string";
+    public $incrementing = false;
 
     protected $fillable = [
         "nik",
@@ -17,6 +18,7 @@ class Lansia extends Model
         "foto",
         "status",
         "user_id",
+        "pendata", 
         "rw",
         "rt",
         "alamat",

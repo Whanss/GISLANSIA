@@ -31,6 +31,9 @@ return new class extends Migration {
             $table->boolean("add_data")->default(false);
             $table->boolean("update_data")->default(false);
             $table->boolean("delete_data")->default(false);
+            $table->text("note")->nullable();
+            $table->string('pendata')->nullable();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }
