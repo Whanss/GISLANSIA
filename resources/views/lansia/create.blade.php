@@ -143,25 +143,23 @@
                     </div>
 
                     <!-- Status — hanya admin yang bisa pilih -->
-                    @if(auth()->user()->hasRole('admin'))
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
-                        <select name="status"
-                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <option value="dikonfirmasi" {{ old('status','dikonfirmasi') === 'dikonfirmasi' ? 'selected' : '' }}>Dikonfirmasi</option>
-                            <option value="pending"      {{ old('status') === 'pending'      ? 'selected' : '' }}>Menunggu Konfirmasi</option>
-                            <option value="ditolak"      {{ old('status') === 'ditolak'      ? 'selected' : '' }}>Ditolak</option>
-                            <option value="meninggal"    {{ old('status') === 'meninggal'    ? 'selected' : '' }}>Meninggal</option>
-                        </select>
-                    </div>
-                    @else
-                    {{-- Petugas: selalu pending, tidak perlu tampil --}}
-                    <input type="hidden" name="status" value="pending">
-                    <div class="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 flex items-center gap-2">
-                        <i class="fas fa-clock text-yellow-500"></i>
-                        <p class="text-sm text-yellow-700">Data yang Anda masukkan akan <strong>menunggu konfirmasi admin</strong> sebelum aktif.</p>
-                    </div>
-                    @endif
+                    @can('lansia.set_status')
+                     <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+        <select name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="dikonfirmasi" {{ old('status','dikonfirmasi') === 'dikonfirmasi' ? 'selected' : '' }}>Dikonfirmasi</option>
+            <option value="pending"      {{ old('status') === 'pending'      ? 'selected' : '' }}>Menunggu Konfirmasi</option>
+            <option value="ditolak"      {{ old('status') === 'ditolak'      ? 'selected' : '' }}>Ditolak</option>
+            <option value="meninggal"    {{ old('status') === 'meninggal'    ? 'selected' : '' }}>Meninggal</option>
+        </select>
+    </div>
+@else
+    <input type="hidden" name="status" value="pending">
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-3 flex items-center gap-2">
+        <i class="fas fa-clock text-yellow-500"></i>
+        <p class="text-sm text-yellow-700">Data yang Anda masukkan akan <strong>menunggu konfirmasi admin</strong> sebelum aktif.</p>
+    </div>
+@endcan
 
                     <!-- Latitude -->
                     <div>

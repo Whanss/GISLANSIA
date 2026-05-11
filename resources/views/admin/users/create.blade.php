@@ -59,31 +59,6 @@
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Konfirmasi kata sandi">
                     </div>
-
-                    {{-- Peran --}}
-                    <div class="mb-6">
-                        <label class="block text-sm font-medium text-gray-900 mb-3">
-                            Peran <span class="text-red-500">*</span>
-                        </label>
-                        <div class="space-y-3">
-                            @forelse($roles as $role)
-                                <div class="flex items-center">
-                                    <input type="radio" id="role_{{ $role->id }}" name="role"
-                                        value="{{ $role->name }}" @if (old('role') === $role->name) checked @endif
-                                        class="w-4 h-4 text-blue-600 focus:ring-2 focus:ring-blue-500">
-                                    <label for="role_{{ $role->id }}" class="ml-3 text-sm text-gray-700">
-                                        <span class="font-medium capitalize">{{ $role->name }}</span>
-                                    </label>
-                                </div>
-                            @empty
-                                <p class="text-gray-500 text-sm">Tidak ada peran tersedia</p>
-                            @endforelse
-                        </div>
-                        @error('role')
-                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
                     {{-- Buttons --}}
                     <div class="mt-8 flex gap-3">
                         <button type="submit"

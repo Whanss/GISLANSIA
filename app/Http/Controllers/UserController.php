@@ -11,7 +11,10 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware("role:admin");
+        $this->middleware('permission:user.view')->only(['index']);
+        $this->middleware('permission:user.create')->only(['create', 'store']);
+        $this->middleware('permission:user.edit')->only(['edit', 'update']);
+        $this->middleware('permission:user.delete')->only(['destroy']);
     }
 
     public function index()
@@ -41,8 +44,7 @@ class UserController extends Controller
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Email harus format email yang valid.',
             'email.unique' => 'Email sudah terdaftar.',
-            'role.required' => 'Peran wajib dipilih.',
-            'role.exists' => 'Peran yang dipilih tidak valid.',
+
         ]);
 
         $user = User::create([
@@ -65,31 +67,26 @@ class UserController extends Controller
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|string|exists:roles,name'
         ], [
             'password.confirmed' => 'Kata Sandi dan Konfirmasi Kata Sandi tidak cocok.',
-            'password.min' => 'Kata Sandi harus minimal 8 karakter.',
-            'name.required' => 'Nama Lengkap wajib diisi.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Email harus format email yang valid.',
-            'email.unique' => 'Email sudah terdaftar.',
-            'role.required' => 'Peran wajib dipilih.',
-            'role.exists' => 'Peran yang dipilih tidak valid.',
+            'password.min'       => 'Kata Sandi harus minimal 8 karakter.',
+            'name.required'      => 'Nama Lengkap wajib diisi.',
+            'email.required'     => 'Email wajib diisi.',
+            'email.email'        => 'Email harus format email yang valid.',
+            'email.unique'       => 'Email sudah terdaftar.',
         ]);
 
         $user->update([
-            'name' => $validated['name'],
+            'name'  => $validated['name'],
             'email' => $validated['email'],
         ]);
 
         if (!empty($validated['password'])) {
             $user->update(['password' => Hash::make($validated['password'])]);
         }
-
-        $user->syncRoles([$validated['role']]);
 
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil diperbarui');
     }

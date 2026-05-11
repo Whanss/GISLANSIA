@@ -30,9 +30,6 @@
                             Izin <span class="text-red-500">*</span>
                         </label>
                         <div class="space-y-3">
-                            @php
-                                $permissions = \Spatie\Permission\Models\Permission::all();
-                            @endphp
                             @forelse($permissions as $permission)
                                 <div class="flex items-center">
                                     <input type="checkbox" id="permission_{{ $permission->id }}" name="permissions[]"
@@ -40,11 +37,10 @@
                                         class="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500">
                                     <label for="permission_{{ $permission->id }}" class="ml-3 text-sm text-gray-700">
                                         <span class="font-medium">{{ $permission->name }}</span>
-                                        <span class="text-gray-500 text-xs ml-2">{{ $permission->description ?? '' }}</span>
                                     </label>
                                 </div>
                             @empty
-                                <p class="text-gray-500 text-sm">Tidak ada izin tersedia</p>
+                                <p class="text-gray-500 text-sm">Tidak ada izin tersedia. <a href="{{ route('permissions.index') }}" class="text-blue-600 hover:underline">Tambah izin</a></p>
                             @endforelse
                         </div>
                         @error('permissions')

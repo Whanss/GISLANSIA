@@ -4,6 +4,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\LansiaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PermissionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", fn() => redirect("/login"));
@@ -59,8 +60,11 @@ Route::middleware(["auth"])->group(function () {
             LansiaController::class,
             "meninggal",
         ])->name("lansia.meninggal");
-
-        Route::resource("users", UserController::class);
-        Route::resource("roles", RoleController::class);
     });
+
+    // Akses dikontrol via permission di masing-masing controller
+    Route::resource("users", UserController::class);
+    Route::resource("roles", RoleController::class);
+    Route::post("roles/users/{user}/assign", [\App\Http\Controllers\RoleController::class, 'assignUserRole'])->name('roles.assign-user');
+    Route::resource("permissions", PermissionController::class)->only(['index', 'store', 'destroy']);
 });

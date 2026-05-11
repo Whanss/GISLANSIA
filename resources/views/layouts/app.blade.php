@@ -53,7 +53,7 @@
                 <img src="{{ asset('storage/sidebar/LOGO_KABUPATEN_LOMBOK_TENGAH.png') }}"
                     alt="Logo" class="w-16 h-16 rounded-lg object-contain mb-3">
                 <h1 class="text-base font-bold leading-tight">GIS Lansia</h1>
-                
+
             </div>
         </div>
 
@@ -68,6 +68,7 @@
                 </a>
 
                 {{-- DATA --}}
+                @can('lansia.view')
                 <div class="pt-3">
                     <p class="text-gray-500 text-xs font-semibold uppercase px-4 mb-2 tracking-wider">Data</p>
                     <a href="{{ route('lansia.index') }}"
@@ -76,31 +77,26 @@
                         <span class="ml-3 font-medium text-sm">Lansia</span>
                     </a>
                 </div>
+                @endcan
 
-                @if(auth()->user()->hasRole('admin'))
+                @if(auth()->user()->can('user.view') || auth()->user()->can('role.view'))
                     {{-- HAK AKSES --}}
                     <div class="pt-3">
                         <p class="text-gray-500 text-xs font-semibold uppercase px-4 mb-2 tracking-wider">Hak Akses</p>
+                        @can('user.view')
                         <a href="{{ route('users.index') }}"
                             class="flex items-center px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors {{ request()->routeIs('users.*') ? 'bg-gray-700 text-white' : '' }}">
                             <i class="fas fa-user w-5 text-sm"></i>
                             <span class="ml-3 font-medium text-sm">Pengguna</span>
                         </a>
+                        @endcan
+                        @can('role.view')
                         <a href="{{ route('roles.index') }}"
                             class="flex items-center px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors {{ request()->routeIs('roles.*') ? 'bg-gray-700 text-white' : '' }}">
                             <i class="fas fa-user-shield w-5 text-sm"></i>
                             <span class="ml-3 font-medium text-sm">Peran & Izin</span>
                         </a>
-                    </div>
-
-                    {{-- PENGATURAN --}}
-                    <div class="pt-3">
-                        <p class="text-gray-500 text-xs font-semibold uppercase px-4 mb-2 tracking-wider">Pengaturan</p>
-                        <a href="#"
-                            class="flex items-center px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
-                            <i class="fas fa-globe w-5 text-sm"></i>
-                            <span class="ml-3 font-medium text-sm">Website</span>
-                        </a>
+                          @endcan
                     </div>
                 @endif
             @endauth
@@ -210,7 +206,7 @@
                                     {{ auth()->user()->name }}
                                 </p>
                                 <p class="text-xs text-gray-400 leading-tight">
-                                    {{ auth()->user()->hasRole('admin') ? 'Administrator' : 'Petugas' }}
+                                    {{ ucfirst(auth()->user()->getRoleNames()->first() ?? '-') }}
                                 </p>
                             </div>
                             <i class="fas fa-chevron-down text-gray-400 text-xs hidden sm:block"></i>
@@ -226,7 +222,7 @@
                                 <p class="text-xs text-gray-400 truncate">{{ auth()->user()->email }}</p>
                                 <span class="inline-block mt-1.5 text-xs px-2 py-0.5 rounded-full font-medium
                                     {{ auth()->user()->hasRole('admin') ? 'bg-indigo-100 text-indigo-700' : 'bg-green-100 text-green-700' }}">
-                                    {{ auth()->user()->hasRole('admin') ? 'Administrator' : 'Petugas' }}
+                                    {{ ucfirst(auth()->user()->getRoleNames()->first() ?? '-') }}
                                 </span>
                             </div>
 

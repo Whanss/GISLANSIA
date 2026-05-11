@@ -30,6 +30,7 @@
                             <tr>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Nama Peran</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Izin</th>
+                                <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Pengguna</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Dibuat</th>
                                 <th class="px-6 py-4 text-left text-sm font-semibold text-gray-900">Aksi</th>
                             </tr>
@@ -59,6 +60,23 @@
                                                 <span class="text-gray-500 text-sm">Tidak ada izin</span>
                                             @endif
                                         </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @php $roleUsers = $users->filter(fn($u) => $u->roles->contains('id', $role->id)); @endphp
+                                        @if($roleUsers->count() > 0)
+                                            <div class="flex items-center gap-2">
+                                                <div class="flex -space-x-2">
+                                                    @foreach($roleUsers->take(3) as $u)
+                                                        <img src="https://ui-avatars.com/api/?name={{ urlencode($u->name) }}&background=4f46e5&color=fff&size=28"
+                                                            class="w-7 h-7 rounded-full border-2 border-white"
+                                                            title="{{ $u->name }}">
+                                                    @endforeach
+                                                </div>
+                                                <span class="text-xs text-gray-500 font-medium">{{ $roleUsers->count() }} pengguna</span>
+                                            </div>
+                                        @else
+                                            <span class="text-xs text-gray-400">Tidak ada</span>
+                                        @endif
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="text-sm text-gray-600">{{ $role->created_at->format('d M Y') }}</div>

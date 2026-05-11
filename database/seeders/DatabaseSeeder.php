@@ -12,25 +12,28 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
         $this->call(RolePermissionSeeder::class);
 
-        // Admin user
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@gmail.com',
-            'password' => Hash::make('admin123'),
-        ])->assignRole('admin');
+        // Admin user — firstOrCreate agar aman dijalankan ulang
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@gmail.com'],
+            [
+                'name'     => 'Super Admin',
+                'password' => Hash::make('admin123'),
+            ]
+        );
+        $admin->syncRoles(['super admin']);
 
         // Petugas user
-        User::create([
-            'name' => 'Petugas',
-            'email' => 'petugas@gmail.com',
-            'password' => Hash::make('petugas123'),
-        ])->assignRole('petugas');
+        $petugas = User::firstOrCreate(
+            ['email' => 'petugas@gmail.com'],
+            [
+                'name'     => 'Petugas',
+                'password' => Hash::make('petugas123'),
+            ]
+        );
+        $petugas->syncRoles(['petugas']);
     }
 }

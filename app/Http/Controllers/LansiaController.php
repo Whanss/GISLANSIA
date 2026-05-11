@@ -11,6 +11,14 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class LansiaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('permission:lansia.view')->only(['index', 'show']);
+        $this->middleware('permission:lansia.create')->only(['create', 'store']);
+        $this->middleware('permission:lansia.edit')->only(['edit', 'update']);
+        $this->middleware('permission:lansia.delete')->only(['destroy']);
+    }
+
     public function index(Request $request)
     {
         $query = Lansia::with("user")->latest();
@@ -58,44 +66,51 @@ class LansiaController extends Controller
 
     public function store(Request $request)
     {
-        $isAdmin = auth()->user()->hasRole("admin");
+        $canAutoConfirm = auth()->user()->can('lansia.auto_confirm');
+        $canSetStatus   = auth()->user()->can('lansia.set_status');
 
         $rules = [
-            "nama" => "required|string|max:255",
-            "nik" => "required|string|unique:lansias,nik|max:16",
+            "nama"          => "required|string|max:255",
+            "nik"           => "required|string|unique:lansias,nik|max:16",
             "tanggal_lahir" => "required|date",
-            "umur" => "required|integer",
-            "alamat" => "required|string",
-            "desa" => "required|string",
-            "kecamatan" => "required|string",
-            "kabupaten" => "required|string",
-            "provinsi" => "required|string",
-            "rt" => "required|string",
-            "rw" => "required|string",
-            "note" => "nullable|string",
-            "latitude" => "nullable|numeric",
-            "longitude" => "nullable|numeric",
+            "umur"          => "required|integer",
+            "alamat"        => "required|string",
+            "desa"          => "required|string",
+            "kecamatan"     => "required|string",
+            "kabupaten"     => "required|string",
+            "provinsi"      => "required|string",
+            "rt"            => "required|string",
+            "rw"            => "required|string",
+            "note"          => "nullable|string",
+            "latitude"      => "nullable|numeric",
+            "longitude"     => "nullable|numeric",
         ];
 
-        if ($isAdmin) {
-            $rules["status"] =
-                "required|in:pending,dikonfirmasi,ditolak,meninggal";
+        if ($canSetStatus) {
+            $rules["status"] = "required|in:pending,dikonfirmasi,ditolak,meninggal";
         }
 
         $validated = $request->validate($rules);
 
-        // Petugas selalu pending, admin sesuai pilihan (default dikonfirmasi)
-        $validated["status"] = $isAdmin
-            ? $validated["status"] ?? "dikonfirmasi"
-            : "pending";
+        if ($canSetStatus) {
+            // Bisa pilih status manual
+            $validated["status"] = $validated["status"] ?? "dikonfirmasi";
+        } elseif ($canAutoConfirm) {
+            // Langsung dikonfirmasi tanpa pilih status
+            $validated["status"] = "dikonfirmasi";
+        } else {
+            // Default: pending, tunggu konfirmasi
+            $validated["status"] = "pending";
+        }
+
         $validated["user_id"] = auth()->id();
         $validated["pendata"] = auth()->user()->name;
 
         Lansia::create($validated);
 
-        $msg = $isAdmin
-            ? "Data Lansia berhasil ditambahkan!"
-            : "Data berhasil dikirim dan menunggu konfirmasi admin.";
+        $msg = $validated["status"] === "pending"
+            ? "Data berhasil dikirim dan menunggu konfirmasi."
+            : "Data Lansia berhasil ditambahkan!";
 
         return redirect()->route("lansia.index")->with("success", $msg);
     }
@@ -112,33 +127,30 @@ class LansiaController extends Controller
 
     public function update(Request $request, Lansia $lansia)
     {
-        $isAdmin = auth()->user()->hasRole("admin");
+        $canSetStatus = auth()->user()->can('lansia.set_status');
 
         $rules = [
-            "nama" => "required|string|max:255",
-            "nik" =>
-                "required|string|max:16|unique:lansias,nik," .
-                $lansia->id .
-                ",id",
+            "nama"          => "required|string|max:255",
+            "nik"           => "required|string|max:16|unique:lansias,nik," . $lansia->id . ",id",
             "tanggal_lahir" => "required|date",
-            "umur" => "required|integer",
-            "alamat" => "required|string",
-            "desa" => "required|string",
-            "kecamatan" => "required|string",
-            "kabupaten" => "required|string",
-            "provinsi" => "required|string",
-            "rt" => "required|string",
-            "rw" => "required|string",
-            "note" => "nullable|string",
-            "latitude" => "nullable|numeric",
-            "longitude" => "nullable|numeric",
-            "status" => "required|in:pending,dikonfirmasi,ditolak,meninggal",
+            "umur"          => "required|integer",
+            "alamat"        => "required|string",
+            "desa"          => "required|string",
+            "kecamatan"     => "required|string",
+            "kabupaten"     => "required|string",
+            "provinsi"      => "required|string",
+            "rt"            => "required|string",
+            "rw"            => "required|string",
+            "note"          => "nullable|string",
+            "latitude"      => "nullable|numeric",
+            "longitude"     => "nullable|numeric",
+            "status"        => "required|in:pending,dikonfirmasi,ditolak,meninggal",
         ];
 
         $validated = $request->validate($rules);
 
-        // Petugas tidak bisa ubah status
-        if (!$isAdmin) {
+        // Hanya yang punya lansia.set_status yang bisa ubah status
+        if (!$canSetStatus) {
             unset($validated["status"]);
         }
 
@@ -150,9 +162,7 @@ class LansiaController extends Controller
 
         $lansia->update($validated);
 
-        return redirect()
-            ->route("lansia.index")
-            ->with("success", "Data Lansia berhasil diperbarui!");
+        return redirect()->route("lansia.index")->with("success", "Data Lansia berhasil diperbarui!");
     }
 
     public function destroy(Lansia $lansia)
@@ -167,6 +177,8 @@ class LansiaController extends Controller
 
     public function konfirmasiIndex()
     {
+        abort_unless(auth()->user()->can('lansia.set_status'), 403);
+
         $pending = Lansia::with("user")
             ->where("status", "pending")
             ->latest()
@@ -179,6 +191,7 @@ class LansiaController extends Controller
 
     public function konfirmasi(Lansia $lansia)
     {
+        abort_unless(auth()->user()->can('lansia.set_status'), 403);
         $lansia->update(["status" => "dikonfirmasi"]);
         return back()->with(
             "success",
@@ -188,6 +201,7 @@ class LansiaController extends Controller
 
     public function tolak(Lansia $lansia)
     {
+        abort_unless(auth()->user()->can('lansia.set_status'), 403);
         // Hapus koordinat agar tidak muncul di peta
         $lansia->update([
             "status" => "ditolak",
@@ -202,6 +216,7 @@ class LansiaController extends Controller
 
     public function meninggal(Lansia $lansia)
     {
+        abort_unless(auth()->user()->can('lansia.set_status'), 403);
         $lansia->update(["status" => "meninggal"]);
         return back()->with(
             "success",

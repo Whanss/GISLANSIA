@@ -161,55 +161,37 @@
                             placeholder="Kondisi kesehatan lansia" value="{{ old('note', $lansia->note) }}">
                     </div>
 
-                    {{-- STATUS — role-aware --}}
+                    {{-- STATUS — permission-aware --}}
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                        @if (auth()->user()->hasRole('admin'))
-                            {{-- Admin: bisa ubah ke semua nilai --}}
+                        @can('lansia.set_status')
                             <select name="status" id="statusSelect"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm">
-                                <option value="dikonfirmasi"
-                                    {{ old('status', $lansia->status) === 'dikonfirmasi' ? 'selected' : '' }}>
-                                    ✓ Dikonfirmasi
-                                </option>
-                                <option value="pending"
-                                    {{ old('status', $lansia->status) === 'pending' ? 'selected' : '' }}>
-                                    ⏳ Menunggu Konfirmasi
-                                </option>
-                                <option value="ditolak"
-                                    {{ old('status', $lansia->status) === 'ditolak' ? 'selected' : '' }}>
-                                    ✗ Ditolak
-                                </option>
-                                <option value="meninggal"
-                                    {{ old('status', $lansia->status) === 'meninggal' ? 'selected' : '' }}>
-                                    ✦ Meninggal
-                                </option>
+                                <option value="dikonfirmasi" {{ old('status', $lansia->status) === 'dikonfirmasi' ? 'selected' : '' }}>✓ Dikonfirmasi</option>
+                                <option value="pending" {{ old('status', $lansia->status) === 'pending' ? 'selected' : '' }}>⏳ Menunggu Konfirmasi</option>
+                                <option value="ditolak" {{ old('status', $lansia->status) === 'ditolak' ? 'selected' : '' }}>✗ Ditolak</option>
+                                <option value="meninggal" {{ old('status', $lansia->status) === 'meninggal' ? 'selected' : '' }}>✦ Meninggal</option>
                             </select>
                             <p class="text-xs text-blue-600 mt-1">
                                 <i class="fas fa-info-circle"></i>
                                 Ubah status di sini untuk konfirmasi / tolak data dari petugas.
                             </p>
                         @else
-                            {{-- Petugas: tidak bisa ubah status, tampil readonly --}}
                             <input type="hidden" name="status" value="{{ $lansia->status }}">
                             @php
                                 $roLabels = [
                                     'dikonfirmasi' => ['bg-green-100 text-green-700', '✓ Dikonfirmasi'],
-                                    'pending' => ['bg-yellow-100 text-yellow-700', '⏳ Menunggu Konfirmasi'],
-                                    'ditolak' => ['bg-red-100 text-red-700', '✗ Ditolak'],
-                                    'meninggal' => ['bg-gray-100 text-gray-600', '✦ Meninggal'],
+                                    'pending'      => ['bg-yellow-100 text-yellow-700', '⏳ Menunggu Konfirmasi'],
+                                    'ditolak'      => ['bg-red-100 text-red-700', '✗ Ditolak'],
+                                    'meninggal'    => ['bg-gray-100 text-gray-600', '✦ Meninggal'],
                                 ];
                                 $ro = $roLabels[$lansia->status] ?? ['bg-gray-100 text-gray-500', $lansia->status];
                             @endphp
-                            <div
-                                class="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 flex items-center gap-2">
-                                <span
-                                    class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold {{ $ro[0] }}">
-                                    {{ $ro[1] }}
-                                </span>
-                                <span class="text-xs text-gray-400">(hanya admin yang dapat mengubah status)</span>
+                            <div class="w-full px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 flex items-center gap-2">
+                                <span class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold {{ $ro[0] }}">{{ $ro[1] }}</span>
+                                <span class="text-xs text-gray-400">(tidak memiliki izin mengubah status)</span>
                             </div>
-                        @endif
+                        @endcan
                         @error('status')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror

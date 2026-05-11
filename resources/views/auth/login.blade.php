@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-gray-100 h-screen flex items-center justify-center">
-    <div class="flex w-[800px] shadow-lg rounded-xl overflow-hidden">
+    <div class="flex w-200 shadow-lg rounded-xl overflow-hidden">
 
         {{-- Left Form --}}
         <div class="bg-white w-1/2 p-10 flex flex-col justify-center">
@@ -41,7 +41,7 @@
                 {{-- Password --}}
                 <div class="mb-6 relative">
                     <span class="absolute inset-y-0 left-3 flex items-center text-gray-400">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" zsxclass="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                     </span>

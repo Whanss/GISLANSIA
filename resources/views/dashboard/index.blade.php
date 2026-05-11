@@ -8,49 +8,45 @@
 
         {{-- ── STATS CARDS ────────────────────────────────────────────────── --}}
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-
-            {{-- Total Lansia --}}
             {{-- Dikonfirmasi --}}
-            <div class="bg-green-500 rounded-xl shadow p-5 text-white flex items-center justify-between">
+            <div class="bg-white rounded-xl shadow p-5 flex items-center justify-between border border-gray-100">
                 <div>
-                    <p class="text-3xl font-bold">{{ $stats['total_dikonfirmasi'] }}</p>
-                    <p class="text-green-100 text-sm mt-1 font-medium">Dikonfirmasi</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $stats['total_dikonfirmasi'] }}</p>
+                    <p class="text-gray-500 text-sm mt-1 font-medium">Dikonfirmasi</p>
                 </div>
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-user-check text-2xl"></i>
+                <div class="w-14 h-14 bg-blue-50 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-user-check text-2xl text-blue-500"></i>
                 </div>
             </div>
-
             {{-- Menunggu Konfirmasi --}}
-            <div class="bg-yellow-500 rounded-xl shadow p-5 text-white flex items-center justify-between">
+            <div class="bg-white rounded-xl shadow p-5 flex items-center justify-between border border-gray-100">
                 <div>
-                    <p class="text-3xl font-bold">{{ $stats['total_pending'] }}</p>
-                    <p class="text-yellow-100 text-sm mt-1 font-medium">Menunggu Konfirmasi</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $stats['total_pending'] }}</p>
+                    <p class="text-gray-500 text-sm mt-1 font-medium">Menunggu Konfirmasi</p>
                 </div>
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-clock text-2xl"></i>
+                <div class="w-14 h-14 bg-yellow-50 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-clock text-2xl text-yellow-500"></i>
                 </div>
             </div>
-
             {{-- Ditolak --}}
-            <div class="bg-red-500 rounded-xl shadow p-5 text-white flex items-center justify-between">
+            <div class="bg-white rounded-xl shadow p-5 flex items-center justify-between border border-gray-100">
                 <div>
-                    <p class="text-3xl font-bold">{{ $stats['total_ditolak'] }}</p>
-                    <p class="text-red-100 text-sm mt-1 font-medium">Ditolak</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $stats['total_ditolak'] }}</p>
+                    <p class="text-gray-500 text-sm mt-1 font-medium">Ditolak</p>
                 </div>
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-user-times text-2xl"></i>
+                <div class="w-14 h-14 bg-red-50 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-user-times text-2xl text-red-400"></i>
                 </div>
             </div>
 
             {{-- Meninggal --}}
-            <div class="bg-gray-600 rounded-xl shadow p-5 text-white flex items-center justify-between">
+            <div class="bg-white rounded-xl shadow p-5 flex items-center justify-between border border-gray-100">
                 <div>
-                    <p class="text-3xl font-bold">{{ $stats['total_meninggal'] }}</p>
-                    <p class="text-gray-300 text-sm mt-1 font-medium">Meninggal</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ $stats['total_meninggal'] }}</p>
+                    <p class="text-gray-500 text-sm mt-1 font-medium">Meninggal</p>
                 </div>
-                <div class="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
-                    <i class="fas fa-cross text-2xl"></i>
+                <div class="w-14 h-14 bg-gray-100 rounded-xl flex items-center justify-center">
+                    <i class="fas fa-heart-broken text-2xl text-gray-400"></i>
                 </div>
             </div>
 
