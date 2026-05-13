@@ -42,8 +42,8 @@ Route::middleware(["auth"])->group(function () {
         "searchLocality",
     ])->name("api.search-locality");
 
-    // Konfirmasi — hanya admin
-    Route::middleware("role:admin")->group(function () {
+    // Konfirmasi — hanya super admin
+    Route::middleware("role:super admin")->group(function () {
         Route::get("konfirmasi", [
             LansiaController::class,
             "konfirmasiIndex",

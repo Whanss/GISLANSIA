@@ -35,7 +35,7 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|string|exists:roles,name'
+            'role' => 'nullable|string|exists:roles,name'
         ], [
             'password.confirmed' => 'Kata Sandi dan Konfirmasi Kata Sandi tidak cocok.',
             'password.min' => 'Kata Sandi harus minimal 8 karakter.',
@@ -53,7 +53,9 @@ class UserController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
-        $user->assignRole($validated['role']);
+        if (!empty($validated['role'])) {
+            $user->assignRole($validated['role']);
+        }
 
         return redirect()->route('users.index')->with('success', 'Pengguna berhasil dibuat');
     }

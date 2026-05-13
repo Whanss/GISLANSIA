@@ -42,7 +42,7 @@
                             @enderror
                         </div>
 
-                        {{-- Izin --}}
+                        {{-- Izin --}}Gambar 18. Kode Tambah Role dan Permission
                         <div class="mb-6">
                             <label class="block text-sm font-medium text-gray-900 mb-3">
                                 Izin <span class="text-red-500">*</span>

@@ -3,10 +3,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Lansia extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     protected $keyType = "string";
     public $incrementing = false;
@@ -18,7 +19,7 @@ class Lansia extends Model
         "foto",
         "status",
         "user_id",
-        "pendata", 
+        "pendata",
         "rw",
         "rt",
         "alamat",
